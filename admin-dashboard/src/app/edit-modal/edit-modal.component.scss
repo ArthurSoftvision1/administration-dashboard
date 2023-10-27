@@ -1,0 +1,56 @@
+/* modal.component.css */
+.modal-header {
+    background-color: #2196F3;
+    /* Change header background color */
+    color: #fff;
+    /* Change header text color */
+    padding: 16px;
+    /* Add padding */
+}
+
+.modal-body {
+    padding: 16px;
+    /* Add padding to the body */
+}
+
+.modal-footer {
+    background-color: #2196F3;
+    /* Change footer background color */
+    color: #fff;
+    /* Change footer text color */
+    padding: 16px;
+    /* Add padding */
+    text-align: right;
+    /* Align buttons to the right */
+}
+
+/* Style the close button */
+.mat-icon-button {
+    color: #fff;
+    /* Change close button color */
+}
+
+/* Style the buttons in the footer */
+.mat-button {
+    margin-left: 10px;
+    /* Add space between buttons */
+}
+
+.mat-dialog-title {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.custom-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.mat-dialog-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+

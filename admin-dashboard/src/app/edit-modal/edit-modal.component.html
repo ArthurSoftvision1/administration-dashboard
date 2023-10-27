@@ -1,0 +1,25 @@
+<div class="mat-dialog-container custom-modal">
+    <mat-dialog-content>
+        <!-- Modal Header -->
+        <div class="mat-dialog-title">
+            <button mat-icon-button (click)="closeModal()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="mat-dialog-content">
+            <!-- Your modal content goes here -->
+            <h3>Employee</h3>
+            <h5>Employee name</h5>
+            {{employee.name}}
+        </div>
+
+        <!-- Modal Footer (optional) -->
+        <mat-dialog-actions class="mat-dialog-actions">
+            <!-- Empty div to push buttons to the right -->
+            <button (click)="saveChanges()" mat-button color="primary">Save</button>
+            <button (click)="closeModal()" mat-button color="warn">Cancel</button>
+        </mat-dialog-actions>
+    </mat-dialog-content>
+</div>
