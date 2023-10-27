@@ -4,6 +4,8 @@ import { Employee } from '../_models/employee.interface';
 import { Shift } from '../_models/shift.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { EditModalComponent } from '../edit-modal/edit-modal.component';
+import { forkJoin, of, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-employees-table',
@@ -25,30 +27,15 @@ export class EmployeesTableComponent implements OnInit {
 
   constructor(private employeeService: EmployeesService, private renderer: Renderer2, private el: ElementRef, private dialog: MatDialog) { }
 
-  ngOnInit() {
-    this.employeeService.getEmployees().subscribe((employeesList: Employee[]) => {
-      this.employees = employeesList;
-      this.totalEmployees = this.employees.length;
-    });
+  ngOnInit(): void {
+    this.loadEmployeesAndShifts()
+      .subscribe(([employeesList, shiftsList]) => {
+        this.employees = employeesList;
+        this.totalEmployees = this.employees.length;
+        this.shifts = shiftsList;
 
-    this.employeeService.getShifts().subscribe((shiftsList: Shift[]) => {
-      this.shifts = shiftsList;
-
-      // Populate the 'clockedIn' property for each employee with data from the 'shifts' array
-      this.employees.forEach((employee: any, index) => {
-        if (this.shifts[index] && this.shifts[index].clockIn) {
-          const clockedInTime = this.formatMillisecondsToTime(this.shifts[index].clockIn);
-          employee.clockedIn = clockedInTime;
-        } else {
-          // Set a default value if 'clockIn' data is not available
-          employee.clockedIn = 0; // You can change this to a default value as needed
-        }
+        this.populateClockedInTimes();
       });
-    });
-
-    // Calculate the sum of clocked-in hours
-    this.calculateTotalClockedIn();
-
   }
 
   // Function to convert milliseconds to 'hh:mm h' format
@@ -64,13 +51,13 @@ export class EmployeesTableComponent implements OnInit {
   }
 
   // Function to update the selection status of all employees
-  updateSelectionStatus() {
+  updateSelectionStatus(): void {
     this.employees.forEach((employee: any) => {
       employee.selected = this.isMainCheckboxChecked;
     });
   }
 
-  calculateTotalClockedIn() {
+  calculateTotalClockedIn(): void {
     this.clockedIn = this.shifts.reduce((total, shift) => {
       if (shift.clockIn) {
         // Convert the 'clockIn' value to hours (assuming it's in milliseconds)
@@ -81,7 +68,7 @@ export class EmployeesTableComponent implements OnInit {
     }, 0); // Initialize total as 0
   }
 
-  editRow(row: Employee) {
+  editRow(row: Employee): void {
     const dialogRef = this.dialog.open(EditModalComponent, {
       data: row, // You can pass data to the modal if needed
       width: '70%', // Set the width to 70% of the window
@@ -94,4 +81,24 @@ export class EmployeesTableComponent implements OnInit {
     });
   }
 
+  private loadEmployeesAndShifts(): Observable<[Employee[], Shift[]]> {
+    return this.employeeService.getEmployees().pipe(
+      switchMap((employeesList: Employee[]) => {
+        return forkJoin([of(employeesList), this.employeeService.getShifts()]);
+      })
+    );
+  }
+
+  private populateClockedInTimes(): void {
+    this.employees.forEach((employee: any, index) => {
+      if (this.shifts[index] && this.shifts[index].clockIn) {
+        const clockedInTime = this.formatMillisecondsToTime(this.shifts[index].clockIn);
+        employee.clockedIn = clockedInTime;
+      } else {
+        employee.clockedIn = 0; // You can change this to a default value as needed
+      }
+    });
+
+    this.calculateTotalClockedIn();
+  }
 }
