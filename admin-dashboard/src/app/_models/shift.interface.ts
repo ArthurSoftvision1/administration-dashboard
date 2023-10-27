@@ -1,6 +1,6 @@
 export interface Shift {
     id: string;
     employeeId: string;
-    clickIn: number;
+    clockIn: number;
     clockOut: number;
 }

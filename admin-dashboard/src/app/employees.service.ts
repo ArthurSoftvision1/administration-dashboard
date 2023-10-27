@@ -15,6 +15,7 @@ export class EmployeesService {
 
   constructor(private http: HttpClient) {
     this.data = dbData;
+    console.log(this.data, 'DATA')
   }
 
   getEmployees(): Observable<Employee[]> {
@@ -39,7 +40,7 @@ export class EmployeesService {
   getShifts(): Observable<Shift[]> {
     // If data is already loaded, return it
     if (this.data) {
-      return of(this.data.shift);
+      return of(this.data.shifts);
     } else {
       // Fetch and store the data, then return shifts
       return this.http.get<ShiftData>('@insightfulio/insightful-test-api-server/db.json').pipe(
