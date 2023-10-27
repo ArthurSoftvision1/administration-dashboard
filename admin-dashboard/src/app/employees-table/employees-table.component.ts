@@ -4,8 +4,6 @@ import { Employee } from '../_models/employee.interface';
 import { Shift } from '../_models/shift.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { EditModalComponent } from '../edit-modal/edit-modal.component';
-import { MatDialogRef } from '@angular/material/dialog';
-
 
 @Component({
   selector: 'app-employees-table',
@@ -16,13 +14,13 @@ export class EmployeesTableComponent implements OnInit {
   displayedColumns: string[] = ['select', 'name', 'email', 'clockedIn', 'regularHoursPaid', 'overtimePaid', 'edit'];
   employees: Employee[] = [];
   shifts: Shift[] = [];
-  clockedIn: number = 0;
-  clockedOut: number = 0;
+  clockedIn = 0;
+  clockedOut = 0;
   // Property to track whether the main checkbox is checked
-  isMainCheckboxChecked: boolean = false;
+  isMainCheckboxChecked = false;
 
   // Property to store the total number of employees
-  totalEmployees: number = 0;
+  totalEmployees = 0;
   isRowHovered = false;
 
   constructor(private employeeService: EmployeesService, private renderer: Renderer2, private el: ElementRef, private dialog: MatDialog) { }
@@ -83,7 +81,7 @@ export class EmployeesTableComponent implements OnInit {
     }, 0); // Initialize total as 0
   }
 
-  editRow(row: any) {
+  editRow(row: Employee) {
     const dialogRef = this.dialog.open(EditModalComponent, {
       data: row, // You can pass data to the modal if needed
       width: '70%', // Set the width to 70% of the window
