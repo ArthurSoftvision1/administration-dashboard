@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +18,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { employeeReducer } from './store/employee.reducer';
 import { EmployeeEffects } from './store/employee.effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { EmployeeEffects } from './store/employee.effects';
     MatDialogModule,
     MatButtonModule,
     StoreModule.forRoot({ employees: employeeReducer }),
-    EffectsModule.forRoot([EmployeeEffects])
+    EffectsModule.forRoot([EmployeeEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   providers: [],
   bootstrap: [AppComponent]

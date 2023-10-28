@@ -24,6 +24,7 @@
     "@insightfulio/insightful-test-api-server": "^1.0.3",
     "@ngrx/effects": "^15.4.0",
     "@ngrx/store": "^15.4.0",
+    "@ngrx/store-devtools": "^15.4.0",
     "http-client": "^4.3.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
