@@ -16,4 +16,6 @@ export const getShiftsSuccess = createAction(
 );
 export const getShiftsFailure = createAction('[Shift] Get Shifts Failure', props<{ error: string, shifts: Shift[] }>());
 
+export const getEmployeesData = createAction('[EmplyeesData] Get EmployeesData');
+
 

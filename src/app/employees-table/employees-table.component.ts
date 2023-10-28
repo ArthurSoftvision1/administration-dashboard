@@ -18,7 +18,7 @@ export class EmployeesTableComponent implements OnInit {
   employees$!: Observable<Employee[]>; // Use an observable for employees
   shifts$!: Observable<Shift[]>; // Use an observable for shifts
   shifts: Shift[] = [];
-  clockedIn: any = 0;
+  clockedIn = 0;
   // Property to track whether the main checkbox is checked
   isMainCheckboxChecked = false;
 
@@ -74,7 +74,7 @@ export class EmployeesTableComponent implements OnInit {
       .pipe(
         take(1), // Take only the first emission
         map(([employees, shifts]) =>
-          employees.map((employee: any, index: any) => {
+          employees.map((employee: Employee, index: number) => {
             if (shifts[index] && shifts[index].clockIn) {
               const clockedInTime = this.formatMillisecondsToTime(shifts[index].clockIn);
               return { ...employee, clockedIn: of(clockedInTime) };
@@ -84,7 +84,7 @@ export class EmployeesTableComponent implements OnInit {
           })
         )
       )
-      .subscribe((updatedEmployees: any) => {
+      .subscribe((updatedEmployees: Employee[]) => {
         // Update the employees$ observable
         this.employees$ = of(updatedEmployees);
       });

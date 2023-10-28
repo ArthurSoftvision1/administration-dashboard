@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { getEmployees, getShifts } from '../store/employee.actions';
+import { getEmployeesData } from '../store/employee.actions';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,8 +11,7 @@ export class DashboardComponent implements OnInit {
   constructor(private store: Store) {}
 
   ngOnInit(): void {
-    // Dispatch the getEmployees action when the component is loaded
-    this.store.dispatch(getEmployees());
-    this.store.dispatch(getShifts());
+    // Dispatch the getEmployeesData action when the component is loaded
+    this.store.dispatch(getEmployeesData());
   }
 }
