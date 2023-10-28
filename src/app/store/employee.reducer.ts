@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { Employee } from '../_models/employee.interface';
 import { Shift } from '../_models/shift.interface';
-import { getEmployees, getEmployeesSuccess, getShiftsSuccess } from './employee.actions';
+import { getEmployeesSuccess, getShiftsSuccess } from './employee.actions';
 
 // Define the initial state for the employee feature
 export interface EmployeeState {
@@ -30,7 +30,7 @@ export const employeeReducer = createReducer(
 );
 
 // Create a union type of all possible actions
-type EmployeeActions = ReturnType<typeof getEmployeesSuccess> | ReturnType<typeof getEmployees> | ReturnType<typeof getShiftsSuccess>;
+type EmployeeActions = ReturnType<typeof getEmployeesSuccess> | ReturnType<typeof getShiftsSuccess>;
 
 export function reducer(state: EmployeeState | undefined, action: EmployeeActions) {
   return employeeReducer(state, action);
