@@ -1,8 +1,8 @@
 <div class="total-employees">
-    <h3>Total Employees: {{ totalEmployees }}</h3>
+    <h3>Total Employees: {{ (employees$ | async)?.length || 0 }}</h3>
     <h3>Total Clocked in time: {{ clockedIn }} hours</h3>
 </div>
-<table mat-table [dataSource]="employees" class="mat-elevation-z8 demo-table">
+<table mat-table [dataSource]="(employees$ | async) || []" class="mat-elevation-z8 demo-table">
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef>
@@ -25,11 +25,13 @@
         <td mat-cell *matCellDef="let row">{{ row.email }}</td>
     </ng-container>
 
-    <!-- Clocked In Time Column -->
-    <ng-container matColumnDef="clockedIn">
-        <th mat-header-cell *matHeaderCellDef>Total Clocked In Time</th>
-        <td mat-cell *matCellDef="let row">{{ row.clockedIn }}</td>
-    </ng-container>
+<!-- Clocked In Time Column -->
+<ng-container matColumnDef="clockedIn">
+    <th mat-header-cell *matHeaderCellDef>Total Clocked In Time</th>
+    <td mat-cell *matCellDef="let row">
+        {{ row.clockedIn | async }}
+    </td>
+</ng-container>
 
     <!-- Regular Hours Paid Column -->
     <ng-container matColumnDef="regularHoursPaid">

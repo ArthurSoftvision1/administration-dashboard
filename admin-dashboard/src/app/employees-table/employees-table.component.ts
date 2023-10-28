@@ -1,11 +1,13 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EmployeesService } from '../employees.service';
 import { Employee } from '../_models/employee.interface';
 import { Shift } from '../_models/shift.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { EditModalComponent } from '../edit-modal/edit-modal.component';
-import { forkJoin, of, switchMap } from 'rxjs';
+import { forkJoin, map, of, switchMap, take } from 'rxjs';
 import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { selectEmployees } from '../store/employee.selectors';
 
 @Component({
   selector: 'app-employees-table',
@@ -14,28 +16,24 @@ import { Observable } from 'rxjs';
 })
 export class EmployeesTableComponent implements OnInit {
   displayedColumns: string[] = ['select', 'name', 'email', 'clockedIn', 'regularHoursPaid', 'overtimePaid', 'edit'];
-  employees: Employee[] = [];
+  employees$!: Observable<Employee[]>; // Use an observable for employees
   shifts: Shift[] = [];
   clockedIn = 0;
-  clockedOut = 0;
   // Property to track whether the main checkbox is checked
   isMainCheckboxChecked = false;
 
-  // Property to store the total number of employees
-  totalEmployees = 0;
-  isRowHovered = false;
-
-  constructor(private employeeService: EmployeesService, private renderer: Renderer2, private el: ElementRef, private dialog: MatDialog) { }
+  constructor(
+    private employeeService: EmployeesService,
+    private dialog: MatDialog,
+    private store: Store) { }
 
   ngOnInit(): void {
+    this.employees$ = this.store.select(selectEmployees);
     this.loadEmployeesAndShifts()
       .subscribe(([employeesList, shiftsList]) => {
-        this.employees = employeesList;
-        this.totalEmployees = this.employees.length;
         this.shifts = shiftsList;
-
-        this.populateClockedInTimes();
       });
+    this.populateClockedInTimes();
   }
 
   // Function to convert milliseconds to 'hh:mm h' format
@@ -50,22 +48,15 @@ export class EmployeesTableComponent implements OnInit {
     return `${formattedHours}:${formattedMinutes} h`;
   }
 
-  // Function to update the selection status of all employees
   updateSelectionStatus(): void {
-    this.employees.forEach((employee: any) => {
-      employee.selected = this.isMainCheckboxChecked;
-    });
-  }
-
-  calculateTotalClockedIn(): void {
-    this.clockedIn = this.shifts.reduce((total, shift) => {
-      if (shift.clockIn) {
-        // Convert the 'clockIn' value to hours (assuming it's in milliseconds)
-        const clockedInHours = shift.clockIn / (60 * 60 * 1000); // milliseconds to hours
-        return total + clockedInHours;
-      }
-      return total;
-    }, 0); // Initialize total as 0
+    this.employees$ = this.employees$.pipe(
+      map((employees) =>
+        employees.map((employee) => ({
+          ...employee,
+          selected: this.isMainCheckboxChecked,
+        }))
+      )
+    );
   }
 
   editRow(row: Employee): void {
@@ -81,6 +72,17 @@ export class EmployeesTableComponent implements OnInit {
     });
   }
 
+  calculateTotalClockedIn(): void {
+    this.clockedIn = this.shifts.reduce((total, shift) => {
+      if (shift.clockIn) {
+        // Convert the 'clockIn' value to hours (assuming it's in milliseconds)
+        const clockedInHours = shift.clockIn / (60 * 60 * 1000); // milliseconds to hours
+        return total + clockedInHours;
+      }
+      return total;
+    }, 0); // Initialize total as 0
+  }
+
   private loadEmployeesAndShifts(): Observable<[Employee[], Shift[]]> {
     return this.employeeService.getEmployees().pipe(
       switchMap((employeesList: Employee[]) => {
@@ -90,15 +92,23 @@ export class EmployeesTableComponent implements OnInit {
   }
 
   private populateClockedInTimes(): void {
-    this.employees.forEach((employee: any, index) => {
-      if (this.shifts[index] && this.shifts[index].clockIn) {
-        const clockedInTime = this.formatMillisecondsToTime(this.shifts[index].clockIn);
-        employee.clockedIn = clockedInTime;
-      } else {
-        employee.clockedIn = 0; // You can change this to a default value as needed
-      }
-    });
-
-    this.calculateTotalClockedIn();
+    this.employees$
+      .pipe(
+        take(1), // Take only the first emission
+        map((employees) =>
+          employees.map((employee, index) => {
+            if (this.shifts[index] && this.shifts[index].clockIn) {
+              const clockedInTime = this.formatMillisecondsToTime(this.shifts[index].clockIn);
+              return { ...employee, clockedIn: of(clockedInTime) };
+            } else {
+              return { ...employee, clockedIn: of(this.formatMillisecondsToTime(this.shifts[index].clockIn)) };
+            }
+          })
+        )
+      )
+      .subscribe((updatedEmployees) => {
+        this.employees$ = of(updatedEmployees); // Update the employees$ observable
+        this.calculateTotalClockedIn(); // Calculate total clockedIn time
+      });
   }
 }
