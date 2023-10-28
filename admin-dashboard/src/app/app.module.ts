@@ -14,6 +14,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { employeeReducer } from './store/employee.reducer';
+import { EmployeeEffects } from './store/employee.effects';
 
 
 @NgModule({
@@ -33,7 +37,9 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    StoreModule.forRoot({ employees: employeeReducer }),
+    EffectsModule.forRoot([EmployeeEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]
