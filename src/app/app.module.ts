@@ -9,7 +9,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { EmployeesTableComponent } from './employees-table/employees-table.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -19,14 +19,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { employeeReducer } from './store/employee.reducer';
 import { EmployeeEffects } from './store/employee.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-
+import { CalculateTotalClockedInPipe } from './calculate-total-clocked-in.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     EmployeesTableComponent,
-    EditModalComponent
+    EditModalComponent,
+    CalculateTotalClockedInPipe
   ],
   imports: [
     BrowserModule,
