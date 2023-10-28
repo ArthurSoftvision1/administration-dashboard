@@ -1,6 +1,6 @@
 <div class="total-employees">
     <h3>Total Employees: {{ (employees$ | async)?.length || 0 }}</h3>
-    <h3>Total Clocked in time: {{ clockedIn }} hours</h3>
+    <h3>Total Clocked in time: {{ shifts$ | async | calculateTotalClockedIn }} hours</h3>
 </div>
 <table mat-table [dataSource]="(employees$ | async) || []" class="mat-elevation-z8 demo-table">
     <!-- Checkbox Column -->

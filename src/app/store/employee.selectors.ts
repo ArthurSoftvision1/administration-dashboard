@@ -7,3 +7,8 @@ export const selectEmployees = createSelector(
   selectEmployeeState,
   (state: fromEmployee.EmployeeState) => state.employees
 );
+
+export const selectShifts = createSelector(
+  selectEmployeeState,
+  (state: fromEmployee.EmployeeState) => state.shifts
+);
