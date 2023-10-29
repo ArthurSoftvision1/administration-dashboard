@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { mergeMap, map, catchError } from 'rxjs/operators';
+import { mergeMap, map, catchError, take } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 import { EmployeesService } from '../employees.service';
-import { getEmployeesData, getEmployeesFailure, getEmployeesSuccess, getShiftsFailure, getShiftsSuccess } from './employee.actions';
+import { getEmployeesData, getEmployeesFailure, getEmployeesSuccess, getShiftsFailure, getShiftsSuccess, updateEmployeeName, updateEmployeeNameFailure, updateEmployeeNameSuccess } from './employee.actions';
+import { Store } from '@ngrx/store';
+import { selectEmployees } from './employee.selectors';
 
 @Injectable()
 export class EmployeeEffects {
-  constructor(private actions$: Actions, private employeesService: EmployeesService) { }
+  constructor(private actions$: Actions, private employeesService: EmployeesService, private store: Store) { }
 
   getEmployeesData$ = createEffect(() => {
     return this.actions$.pipe(
@@ -48,4 +50,28 @@ export class EmployeeEffects {
     );
   });
 
+  updateEmployeeName$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(updateEmployeeName),
+      mergeMap((action: { id: string; name: string }) => {
+        return this.store.select(selectEmployees).pipe(
+          take(1),
+          map((employees) => {
+            const employeeToUpdate = employees.find((e) => e.id === action.id);
+
+            if (employeeToUpdate) {
+              // Make changes to the employee
+              const updatedEmployee = { ...employeeToUpdate, name: action.name };
+
+              // Dispatch a separate action to handle the update operation
+              return updateEmployeeNameSuccess({ updatedEmployee });
+            } else {
+              return updateEmployeeNameFailure({ error: 'Employee not found' });
+            }
+          })
+        );
+      })
+    )
+  }
+  );
 }

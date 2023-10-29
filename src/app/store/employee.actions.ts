@@ -18,4 +18,17 @@ export const getShiftsFailure = createAction('[Shift] Get Shifts Failure', props
 
 export const getEmployeesData = createAction('[EmplyeesData] Get EmployeesData');
 
+export const updateEmployeeName = createAction(
+  '[Employee] Update Employee Name',
+  props<{ id: string; name: string }>()
+);
 
+export const updateEmployeeNameSuccess = createAction(
+  '[Employee] Update Employee Name Success',
+  props<{ updatedEmployee: Employee }>()
+);
+
+export const updateEmployeeNameFailure = createAction(
+  '[Employee] Update Employee Name Failure',
+  props<{ error: string }>()
+);

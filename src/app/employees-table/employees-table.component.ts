@@ -17,7 +17,6 @@ export class EmployeesTableComponent implements OnInit {
   displayedColumns: string[] = ['select', 'name', 'email', 'clockedIn', 'regularHoursPaid', 'overtimePaid', 'edit'];
   employees$!: Observable<Employee[]>; // Use an observable for employees
   shifts$!: Observable<Shift[]>; // Use an observable for shifts
-  shifts: Shift[] = [];
   clockedIn = 0;
   // Property to track whether the main checkbox is checked
   isMainCheckboxChecked = false;

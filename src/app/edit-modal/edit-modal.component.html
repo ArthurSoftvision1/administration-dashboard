@@ -22,15 +22,13 @@
             <!-- Input field to edit employee.name when in edit mode -->
             <ng-template #editField>
                 <input [(ngModel)]="editedName" type="text" name="name">
-                <button mat-icon-button (click)="saveChanges()"><mat-icon>done</mat-icon></button>
-                <button mat-icon-button (click)="cancelEdit()"><mat-icon>close</mat-icon></button>
             </ng-template>
         </div>
 
         <!-- Modal Footer (optional) -->
         <mat-dialog-actions class="mat-dialog-actions">
             <!-- Empty div to push buttons to the right -->
-            <button (click)="saveChanges()" mat-button color="primary">Save</button>
+            <button (click)="saveModalChanges()" mat-button color="primary">Save</button>
             <button (click)="closeModal()" mat-button color="warn">Cancel</button>
         </mat-dialog-actions>
     </mat-dialog-content>
