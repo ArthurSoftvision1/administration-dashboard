@@ -10,16 +10,35 @@ import { Employee } from '../_models/employee.interface';
 })
 export class EditModalComponent {
   employee: Employee;
+  editMode = false;
+  editedName = ''; // Initialize editedName with employee.name
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: Employee, private dialogRef: MatDialogRef<EditModalComponent>) {
     this.employee = data;
   }
 
+  toggleEditMode() {
+    this.editMode = !this.editMode;
+    if (this.editMode) {
+      this.editedName = this.employee.name; // Capture the initial value
+    }
+  }
+
   saveChanges() {
-    return;
+    this.editMode = false;
+    this.employee.name = this.editedName; // Update the employee name
+    // You can save the changes to your data source here.
+  }
+
+  cancelEdit() {
+    this.editMode = false;
+    // Reset the input field if the user cancels.
+    this.editedName = this.employee.name; // Restore the original name
   }
 
   closeModal() {
     this.dialogRef.close();
   }
+
+ 
 }

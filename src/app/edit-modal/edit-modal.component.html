@@ -12,7 +12,19 @@
             <!-- Your modal content goes here -->
             <h3>Employee</h3>
             <h5>Employee name</h5>
-            {{employee.name}}
+
+            <!-- Display employee.name when not in edit mode -->
+            <ng-container *ngIf="!editMode; else editField">
+                {{employee.name}}
+                <button mat-icon-button (click)="toggleEditMode()"><mat-icon>edit</mat-icon></button>
+            </ng-container>
+
+            <!-- Input field to edit employee.name when in edit mode -->
+            <ng-template #editField>
+                <input [(ngModel)]="editedName" type="text" name="name">
+                <button mat-icon-button (click)="saveChanges()"><mat-icon>done</mat-icon></button>
+                <button mat-icon-button (click)="cancelEdit()"><mat-icon>close</mat-icon></button>
+            </ng-template>
         </div>
 
         <!-- Modal Footer (optional) -->
