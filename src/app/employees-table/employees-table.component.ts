@@ -77,13 +77,16 @@ export class EmployeesTableComponent implements OnInit {
             if (shifts[index] && shifts[index].clockIn) {
               const clockedInTime = this.formatMillisecondsToTime(shifts[index].clockIn);
               const hourlyRate = employee.hourlyRate;
+              const overTimeRate = employee.hourlyRateOvertime;
 
               // Extract and round the integer part of clockedInTime
               const roundedClockedIn = Math.round(parseInt(clockedInTime, 10));
 
               const regularHoursPaid = this.calculateRegularHoursPaid(hourlyRate, roundedClockedIn);
 
-              return { ...employee, clockedIn: of(clockedInTime), regularHoursPaid: Math.round(regularHoursPaid) };
+              const overTimePaid = this.calculateRegularHoursPaid(overTimeRate, roundedClockedIn);
+
+              return { ...employee, clockedIn: of(clockedInTime), regularHoursPaid: Math.round(regularHoursPaid), overtimePaid: Math.round(overTimePaid) };
             } else {
               return { ...employee, clockedIn: of(this.formatMillisecondsToTime(shifts[index].clockIn)) };
             }

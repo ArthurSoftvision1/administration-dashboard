@@ -7,21 +7,44 @@
             </button>
         </div>
 
-        <!-- Modal Body -->
-        <div class="mat-dialog-content">
-            <!-- Your modal content goes here -->
-            <h3>Employee</h3>
-            <h5>Employee name</h5>
+        <h3>Employee</h3>
+        <div class="mat-dialog-content d-flex">
+            <div class="w-50">
+                <div>Employee name</div>
 
-            <!-- Display employee.name when not in edit mode -->
-            <ng-container *ngIf="!editMode; else editField">
-                {{employee.name}}
-                <button mat-icon-button (click)="toggleEditMode()"><mat-icon>edit</mat-icon></button>
+                <ng-container *ngIf="!editMode; else editField">
+                    {{employee.name}}
+                    <button mat-icon-button (click)="toggleEditMode('nameInput')"><mat-icon>edit</mat-icon></button>
+                </ng-container>
+
+                <ng-template #editField>
+                    <input [(ngModel)]="editedName" type="text" name="name">
+                </ng-template>
+            </div>
+            <div class="w-50">
+                <div>Employee hourly rate</div>
+
+                <ng-container *ngIf="!editModeHourlyRate; else editFieldHourRate">
+                    {{employee.hourlyRate}}
+                    <button mat-icon-button (click)="toggleEditMode('hourlyRateInput')"><mat-icon>edit</mat-icon></button>
+                </ng-container>
+             
+                <ng-template #editFieldHourRate>
+                    <input [(ngModel)]="editedHourlyRate" type="text" name="name">
+                </ng-template>
+            </div>
+        </div>
+        
+         <div class="w-50 mt-5">
+            <div>Employee overtime hourly rate</div>
+
+            <ng-container *ngIf="!editModeOvertimeHourlyRate; else editFieldOverTimeHourRate">
+                {{employee.hourlyRateOvertime}}
+                <button mat-icon-button (click)="toggleEditMode('overTimeHourRateInput')"><mat-icon>edit</mat-icon></button>
             </ng-container>
 
-            <!-- Input field to edit employee.name when in edit mode -->
-            <ng-template #editField>
-                <input [(ngModel)]="editedName" type="text" name="name">
+            <ng-template #editFieldOverTimeHourRate>
+                <input [(ngModel)]="overtimeHourlyRate" type="text" name="name">
             </ng-template>
         </div>
 

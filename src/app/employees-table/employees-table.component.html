@@ -43,7 +43,7 @@
     <!-- Overtime Amount Paid Column -->
     <ng-container matColumnDef="overtimePaid">
         <th mat-header-cell *matHeaderCellDef>Total Overtime Amount Paid</th>
-        <td mat-cell *matCellDef="let row">{{ row.overtimePaid }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.overtimePaid | currency:'USD':'symbol'}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
