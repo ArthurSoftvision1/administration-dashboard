@@ -20,6 +20,7 @@ export class EmployeesTableComponent implements OnInit {
   clockedIn = 0;
   // Property to track whether the main checkbox is checked
   isMainCheckboxChecked = false;
+  hourlyRate: number = 10; // Replace with your hourlyRate
 
   constructor(
     private dialog: MatDialog,
@@ -31,16 +32,16 @@ export class EmployeesTableComponent implements OnInit {
     this.populateClockedInTimes();
   }
 
-  // Function to convert milliseconds to 'hh:mm h' format
-  formatMillisecondsToTime(milliseconds: number): string {
+  // we rounded this the value in order to calculate easier
+  formatMillisecondsToTime(milliseconds: number, roundHours: boolean = true): string {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
 
-    const formattedHours = hours.toString().padStart(2, '0');
-    const formattedMinutes = minutes.toString().padStart(2, '0');
-
-    return `${formattedHours}:${formattedMinutes} h`;
+    if (roundHours) {
+      return Math.round(hours).toString();
+    } else {
+      return hours.toString();
+    }
   }
 
   updateSelectionStatus(): void {
@@ -68,15 +69,21 @@ export class EmployeesTableComponent implements OnInit {
   }
 
   private populateClockedInTimes(): void {
-    // Combine the latest emissions of employees$ and shifts$
     combineLatest([this.employees$, this.shifts$])
       .pipe(
-        take(1), // Take only the first emission
+        take(1),
         map(([employees, shifts]) =>
           employees.map((employee: Employee, index: number) => {
             if (shifts[index] && shifts[index].clockIn) {
               const clockedInTime = this.formatMillisecondsToTime(shifts[index].clockIn);
-              return { ...employee, clockedIn: of(clockedInTime) };
+              const hourlyRate = employee.hourlyRate;
+
+              // Extract and round the integer part of clockedInTime
+              const roundedClockedIn = Math.round(parseInt(clockedInTime, 10));
+
+              const regularHoursPaid = this.calculateRegularHoursPaid(hourlyRate, roundedClockedIn);
+
+              return { ...employee, clockedIn: of(clockedInTime), regularHoursPaid: Math.round(regularHoursPaid) };
             } else {
               return { ...employee, clockedIn: of(this.formatMillisecondsToTime(shifts[index].clockIn)) };
             }
@@ -84,8 +91,11 @@ export class EmployeesTableComponent implements OnInit {
         )
       )
       .subscribe((updatedEmployees: Employee[]) => {
-        // Update the employees$ observable
         this.employees$ = of(updatedEmployees);
       });
+  }
+
+  calculateRegularHoursPaid(hourlyRate: number, clockedInTime: number): number {
+    return hourlyRate * clockedInTime;
   }
 }

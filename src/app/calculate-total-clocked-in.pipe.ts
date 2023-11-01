@@ -9,12 +9,15 @@ export class CalculateTotalClockedInPipe implements PipeTransform {
     if (!shifts || shifts.length === 0) {
       return 0;
     }
-    return shifts.reduce((total, shift) => {
+  
+    const totalClockedInHours = shifts.reduce((total, shift) => {
       if (shift.clockIn) {
         const clockedInHours = shift.clockIn / (60 * 60 * 1000);
         return total + clockedInHours;
       }
       return total;
     }, 0);
+  
+    return Math.round(totalClockedInHours);
   }
 }

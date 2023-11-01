@@ -1,6 +1,6 @@
 <div class="total-employees">
     <h3>Total Employees: {{ (employees$ | async)?.length || 0 }}</h3>
-    <h3>Total Clocked in time: {{ shifts$ | async | calculateTotalClockedIn }} hours</h3>
+    <h3>Total Clocked in time: {{ shifts$ | async | calculateTotalClockedIn | number }} hours</h3>
 </div>
 <table mat-table [dataSource]="(employees$ | async) || []" class="mat-elevation-z8 demo-table">
     <!-- Checkbox Column -->
@@ -25,18 +25,19 @@
         <td mat-cell *matCellDef="let row">{{ row.email }}</td>
     </ng-container>
 
-<!-- Clocked In Time Column -->
-<ng-container matColumnDef="clockedIn">
-    <th mat-header-cell *matHeaderCellDef>Total Clocked In Time</th>
-    <td mat-cell *matCellDef="let row">
-        {{ row.clockedIn | async }}
-    </td>
-</ng-container>
-
+    <!-- Clocked In Time Column -->
+    <ng-container matColumnDef="clockedIn">
+        <th mat-header-cell *matHeaderCellDef>Total Clocked In Time</th>
+        <td mat-cell *matCellDef="let row">
+            {{ row.clockedIn | async | number }} hrs
+        </td>
+    </ng-container>
     <!-- Regular Hours Paid Column -->
     <ng-container matColumnDef="regularHoursPaid">
         <th mat-header-cell *matHeaderCellDef>Total Regular Hours Paid</th>
-        <td mat-cell *matCellDef="let row">{{ row.regularHoursPaid }}</td>
+        <td mat-cell *matCellDef="let employee">
+            {{ employee.regularHoursPaid | currency:'USD':'symbol'}}
+        </td>
     </ng-container>
 
     <!-- Overtime Amount Paid Column -->
@@ -49,12 +50,12 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
     <!-- Edit Button Column -->
-<ng-container matColumnDef="edit">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let row">
-      <button mat-icon-button (click)="editRow(row)">
-        <mat-icon>edit</mat-icon>
-      </button>
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="editRow(row)">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </td>
+    </ng-container>
 </table>
